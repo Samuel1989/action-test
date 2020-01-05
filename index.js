@@ -2,7 +2,7 @@ import {GitHub} from '@actions/github/lib/github';
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-var createReview = function(client, comment) {
+var createReview = function(client, pullRequest, comment) {
   client.pulls.createReview({
     owner: pullRequest.owner,
     repo: pullRequest.repo,
@@ -15,10 +15,9 @@ var createReview = function(client, comment) {
 try {
   let comment;
   if (!new RegExp(titleRegex).test(title)) {
-    core.setFailed('Pull Request lint failed.');
-    createReview(`Incorrect title format, regex for correct format is "${titleRegex}".`);
+    createReview(client, pullRequest, `Incorrect title format, regex for correct format is "${titleRegex}".`);
   }
 
 } catch (error) {
-  core.setFailed(error.message);
+  console.error(error.message);
 }
