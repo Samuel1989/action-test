@@ -13,7 +13,23 @@ var createReview = function(client, pullRequest, comment) {
 }
 
 try {
-  let comment;
+  const token = core.getInput('github-token');
+  const titleRegex = core.getInput('title-regex');
+  const labelText = core.getInput('label-text');
+  const client = new github.GitHub(token);
+  const payload = github.context.payload;
+  const pullRequest = github.context.issue;
+  const title = payload.pull_request.title;
+  const body = payload.pull_request.body;
+  const labels = payload.pull_request.labels;
+
+  console.log("labels", labels);
+  client.issues.addLabels({
+    owner: pullRequest.owner,
+    repo: pullRequest.repo,
+    issue_number: pullRequest.number,
+    labels: ['Testing labels']
+  });
   if (!new RegExp(titleRegex).test(title)) {
     createReview(client, pullRequest, `Incorrect title format, regex for correct format is "${titleRegex}".`);
   }
