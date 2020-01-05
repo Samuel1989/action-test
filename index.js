@@ -19,13 +19,23 @@ try {
   const payload = JSON.stringify(github.context.payload, undefined, 2)
   console.log(`The event payload: ${payload}`);
 
-  client.pulls.createReview({
-    owner: pullRequest.owner,
-    repo: pullRequest.repo,
-    pull_number: pullRequest.number,
-    body: 'This is a comment!',
-    event: 'COMMENT'
-  });
+  let comment;
+  if (!new Regex(titleRegex).test(title)) {
+    comment = 'Incorrect title format, correct format is "{hr|engage|recruit|core|pay|work|perform|learn|analytics}/{feature|fix}/{description}".'
+  }
+
+  if (comment) {
+    client.pulls.createReview({
+      owner: pullRequest.owner,
+      repo: pullRequest.repo,
+      pull_number: pullRequest.number,
+      body: comment,
+      event: 'COMMENT'
+    });
+    core.setFailed('Pull Request lint failed.');
+  }
+
+
 } catch (error) {
   core.setFailed(error.message);
 }
