@@ -20,8 +20,12 @@ try {
   console.log(`The event payload: ${payload}`);
 
   let comment;
-  if (!new Regex(titleRegex).test(title)) {
-    comment = 'Incorrect title format, correct format is "{hr|engage|recruit|core|pay|work|perform|learn|analytics}/{feature|fix}/{description}".'
+  if (!new RegExp(titleRegex).test(title)) {
+    comment = `Incorrect title format, regex for correct format is "${titleRegex}".`;
+  }
+
+  if (!new RegExp(bodyRegex).test(body)) {
+    comment = `Incorrect body format, regex for correct format is "${bodyRegex}".`;
   }
 
   if (comment) {
